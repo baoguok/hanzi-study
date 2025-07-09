@@ -200,6 +200,9 @@ Vue.createApp({
     },
     goMath() {
       window.location.href = './math/index.html'
-    }
+    },
+    goPoem() {
+      window.location.href = './poem/index.html'
+    },
   },
 }).mount('body')

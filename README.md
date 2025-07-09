@@ -2,6 +2,7 @@
 - 儿童学习汉字, 学前教育, 小朋友学习汉字拼音, 通过小游戏闯关的方式学习汉字, 听音识字, 笔画书写
 - 适合3~6岁小朋友学习汉字拼音, 笔画书写, 听音识字, 汉字小游戏闯关
 - 支持学习加减法, 设置10以内还是100以内, 设置是否支持减法
+- 支持学习一到六年级小学古诗词, 支持古诗朗读, 上下首切换, 查看古诗词拼音，注释译文等
 - 支持平板端, 手机端, 电脑端
 - 支持一键开启护眼模式(左上角绿叶)
 - 家长可以按顶部标题10次可以自定义当前关卡进度, 方便多终端同步进度
@@ -59,6 +60,7 @@ docker-compose restart
 - <img src="https://gcore.jsdelivr.net/gh/dhjz/hanzi-study@master/appimg/app3.jpg" style="width: 340px;"/>
 - <img src="https://gcore.jsdelivr.net/gh/dhjz/hanzi-study@master/appimg/app4.jpg" style="width: 340px;"/>
 - <img src="https://gcore.jsdelivr.net/gh/dhjz/hanzi-study@master/appimg/app5.jpg" style="width: 340px;"/>
+- <img src="https://gcore.jsdelivr.net/gh/dhjz/hanzi-study@master/appimg/app6.jpg" style="width: 340px;"/>
 
 - 项目地址: [https://github.com/dhjz/hanzi-study]( https://github.com/dhjz/hanzi-study)  
 - 预览地址: [https://dhjz.github.io/hanzi-study/](https://dhjz.github.io/hanzi-study/)
