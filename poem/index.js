@@ -14,7 +14,7 @@ const app = {
             audioPlayer: null,
             currPoemInd: -1,
             showList: false,
-            showAuthor: false,
+            showAuthor: getStorage('poem_showAuthor') || false,
             keyword: '',
             // 主题相关
             currentTheme: 'theme-default', // 默认主题
@@ -55,6 +55,7 @@ const app = {
         saveLocal() {
             setStorage('poem_currGrade', this.currGrade);
             setStorage('poem_currPoemInd', this.currPoemInd);
+            setStorage('poem_showAuthor', this.showAuthor);
         },
         selectGrade() {
             this.currentPoetryList = this.poemData[this.currGrade] || [];
