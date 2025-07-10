@@ -13,6 +13,9 @@ const app = {
             isPlaying: false,
             audioPlayer: null,
             currPoemInd: -1,
+            showList: false,
+            showAuthor: false,
+            keyword: '',
             // 主题相关
             currentTheme: 'theme-default', // 默认主题
             themes: [
@@ -20,7 +23,7 @@ const app = {
                 { key: 'theme-green', color: '#e8f5e9' },   // 淡绿
                 { key: 'theme-blue', color: '#e3f2fd' },    // 淡蓝
                 { key: 'theme-purple', color: '#f3e5f5' }   // 淡紫
-            ]
+            ],
         };
     },
     created() {
@@ -43,6 +46,9 @@ const app = {
         }
     },
     methods: {
+        getFilterPoems(poems) {
+            return poems.filter(poem => poem.title.includes(this.keyword) || poem.author.includes(this.keyword))
+        },
         scroll() {
             document.querySelector('.poetry-list li.active').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         },
@@ -57,7 +63,12 @@ const app = {
             this.stopAudio();
             this.saveLocal()
         },
-        selectPoetry(poetry, isInit) {
+        selectPoetry(poetry, isInit, gradeInd) {
+            if (gradeInd) {
+                this.showList = false;
+                this.currGrade = gradeInd;
+                this.currentPoetryList = this.poemData[this.currGrade]
+            }
             poetry.audio = `./audio/${poetry.title}.mp3`;
             this.selectedPoetry = poetry;
             if (!isInit) {

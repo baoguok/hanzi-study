@@ -10,7 +10,7 @@
 </head>
 <body id="app" v-cloak>
     <div class="app_wrap" :class="currentTheme"> <!-- 绑定当前主题类 -->
-        <div class="container">
+        <div class="container" v-show="!showList">
             <!-- 左侧导航栏 -->
             <div class="sidebar">
                 <div class="grade-selector">
@@ -23,7 +23,7 @@
                     <h3>{{ grades[currGrade] }}诗词</h3>
                     <ul>
                         <li v-for="poetry in currentPoetryList" :key="poetry.id" @click="selectPoetry(poetry)" :class="{ active: selectedPoetry && selectedPoetry.id === poetry.id }">
-                            {{ poetry.title }} - {{ poetry.author }}
+                            {{ poetry.title }}<span v-show="showAuthor"> - {{ poetry.author }}</span>
                         </li>
                         <li v-if="currentPoetryList.length === 0" class="no-data">
                             暂无诗词，请选择其他年级。
@@ -52,10 +52,12 @@
                         <button @click="toggleAudio" :disabled="!selectedPoetry.audio">{{ isPlaying ? '暂停 ⏸️' : '播放 ▶️' }}</button>
                         <button @click="nextPoetry" :disabled="!canNext">下一首<span> ⏩</span></button>
                     </div>
-                    <h2 class="poetry-title">《{{ selectedPoetry.title }}》</h2>
-                    <p class="poetry-meta">
-                        作者：{{ selectedPoetry.author }} ({{ selectedPoetry.dynasty }})
-                    </p>
+                    <div class="poem-title">
+                        <h2 class="poetry-title">《{{ selectedPoetry.title }}》</h2>
+                        <p class="poetry-meta">
+                            作者：{{ selectedPoetry.author }} ({{ selectedPoetry.dynasty }})
+                        </p>
+                    </div>
                     <div class="poetry-box">
 
                         <div class="poetry-left">
@@ -94,7 +96,26 @@
                     <h2>请在左侧选择一首古诗词开始学习吧！</h2>
                     <p>✨ 寓教于乐，让古诗词更有趣！ ✨</p>
                 </div>
+            
             </div>
+        </div>
+        <div class="container-list"  v-show="showList">
+            <div class="poem-list" v-for="(poems, ind) in poemData" :key="ind">
+                <h3>{{ grades[ind] }}诗词</h3>
+                <ul>
+                    <li v-for="poetry in getFilterPoems(poems)" :key="poetry.id" @click="selectPoetry(poetry, false, ind)" :class="{ active: selectedPoetry && selectedPoetry.id === poetry.id }">
+                        {{ poetry.title }}<span v-show="showAuthor"> - {{ poetry.author }}</span>
+                    </li>
+                    <li v-if="currentPoetryList.length === 0" class="no-data">
+                        暂无诗词，请选择其他年级。
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="list-icon">
+            <span  @click="showList = !showList"  :class="[showList && 'on']">📃</span>
+            <span  @click="showAuthor = !showAuthor" :class="[showAuthor && 'on']">👨‍🎓 </span>
+            <input type="text" v-show="showList" v-model="keyword" placeholder="诗名或作者名搜索" />
         </div>
     </div>
 

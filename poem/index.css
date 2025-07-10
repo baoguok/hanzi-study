@@ -118,7 +118,7 @@ body {
 	background-color: #ddd;
 	border-radius: 6px;
 }
-
+input { background-color: #fff; border-radius: 4px; border: 1px solid #dcdfe6; width: 130px; font-size: 12px; color: #333; line-height: 22px; padding: 0 10px; outline: none; margin-right: 10px; }
 .app_wrap {
     width: 97%;
     max-width: 1200px;
@@ -130,11 +130,26 @@ body {
     overflow: hidden;
     border: 2px solid #f2ece5;
     transition: background-color 0.3s ease; /* 过渡效果 */
+    position: relative;
 }
 
 .container {
     display: flex;
     flex: 1;
+}
+.list-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.list-icon span {
+    cursor: pointer;
+    font-size: 16px;
+    padding: 3px;
+    opacity: .4;
+}
+.list-icon .on {
+    opacity: 1;
 }
 
 /* 左侧导航栏 */
@@ -220,6 +235,42 @@ body {
     cursor: default;
 }
 
+.container-list {
+    flex: 1;
+    overflow: auto;
+    padding: 22px 10px 10px;
+}
+.poem-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.poem-list h3 {font-size: 0.9em;margin: 4px 0;}
+
+.poem-list li {
+    display: inline-block;
+    padding: 4px 6px;
+    margin: 0 6px 6px 0;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    font-size: 0.9em;
+    text-align: left;
+    color: var(--sidebar-list-item-color); /* 使用变量 */
+}
+
+.poem-list li:hover {
+    background-color: var(--sidebar-list-item-hover-bg); /* 使用变量 */
+    color: var(--sidebar-title-color); /* 悬停时颜色指向标题颜色 */
+}
+
+.poem-list li.active {
+    background-color: var(--sidebar-list-item-active-bg); /* 使用变量 */
+    color: #fff;
+    font-weight: bold;
+}
+
 /* 主题切换区域 */
 .theme-switcher {
     margin-top: 20px;
@@ -299,6 +350,12 @@ body {
     font-size: 2.2em;
     margin: 10px 0;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+.poem-title {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    margin-bottom: 10px;
 }
 
 .poetry-meta {
@@ -459,6 +516,9 @@ h1, h2 {
     .poetry-box {
         display: block;
     }
+    .poem-title {
+        display: block;
+    }
 }
 @media (max-width: 760px) {
     #app {
@@ -491,10 +551,8 @@ h1, h2 {
     }
 
     .poetry-info {
-
-margin-left: 0;
-
-}
+        margin-left: 0;
+    }
 
     .poetry-translation, .poetry-annotation {
         /* width: 90%; */
