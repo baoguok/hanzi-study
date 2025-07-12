@@ -101,6 +101,7 @@ const app = {
             this.timer = setTimeout(() => {
                 // 如果URL不同或播放器已暂停，则加载并播放
                 if (this.getFileName(this.audioPlayer.src) !== this.getFileName(audioUrl)) {
+                    this.audioPlayer.currentTime = 0;
                     this.audioPlayer.src = audioUrl;
                 }
                 setTimeout(() => {
