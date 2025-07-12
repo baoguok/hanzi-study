@@ -26,6 +26,7 @@ const app = {
                 { key: 'theme-blue', color: '#e3f2fd' },    // 淡蓝
                 { key: 'theme-purple', color: '#f3e5f5' }   // 淡紫
             ],
+            timer: null,
         };
     },
     created() {
@@ -41,6 +42,9 @@ const app = {
             } else {
                 this.isPlaying = false;
             }
+        };
+        this.audioPlayer.onerror = (e) => {
+            console.error("Error loading audio:", e);
         };
         if (this.currPoemInd != -1) {
             this.selectPoetry(this.currentPoetryList[this.currPoemInd], true)
@@ -82,7 +86,7 @@ const app = {
             if (!isInit) {
                 this.currPoemInd = this.currentPoetryList.findIndex(p => p.id === poetry.id);
                 this.stopAudio();
-                this.playAudio(this.selectedPoetry.audio);
+                this.playAudio(this.selectedPoetry.audio)
                 this.saveLocal()
             }
             setTimeout(() => this.scroll(), 100)
@@ -93,17 +97,21 @@ const app = {
             if (this.audioPlayer.src === audioUrl && !this.audioPlayer.paused) {
                 return;
             }
-            console.log(this.audioPlayer.src, audioUrl);
-            // 如果URL不同或播放器已暂停，则加载并播放
-            if (this.getFileName(this.audioPlayer.src) !== this.getFileName(audioUrl)) {
-                this.audioPlayer.src = audioUrl;
-            }
-            this.audioPlayer.play().then(() => {
-                this.isPlaying = true;
-            }).catch(error => {
-                console.error("音频播放失败:", error);
-                this.isPlaying = false;
-            });
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                // 如果URL不同或播放器已暂停，则加载并播放
+                if (this.getFileName(this.audioPlayer.src) !== this.getFileName(audioUrl)) {
+                    this.audioPlayer.src = audioUrl;
+                }
+                setTimeout(() => {
+                    this.audioPlayer.play().then(() => {
+                        this.isPlaying = true;
+                    }).catch(error => {
+                        console.error("音频播放失败:", error);
+                        this.isPlaying = false;
+                    });
+                }, 100)
+            }, 200)
         },
         stopAudio() {
             if (this.audioPlayer) {
