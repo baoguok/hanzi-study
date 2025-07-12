@@ -48,9 +48,9 @@
             <div class="content">
                 <div v-if="selectedPoetry" class="poetry-details">
                     <div class="audio-controls">
-                        <button @click="prevPoetry" :disabled="!canPrev">上一首<span> ⏪</span></button>
+                        <button @click="prevPoetry" :disabled="!repeatPlay &&!canPrev">上一首<span> ⏪</span></button>
                         <button @click="toggleAudio" :disabled="!selectedPoetry.audio">{{ isPlaying ? '暂停 ⏸️' : '播放 ▶️' }}</button>
-                        <button @click="nextPoetry" :disabled="!canNext">下一首<span> ⏩</span></button>
+                        <button @click="nextPoetry" :disabled="!repeatPlay && !canNext">下一首<span> ⏩</span></button>
                     </div>
                     <div class="poem-title">
                         <h2 class="poetry-title">《{{ selectedPoetry.title }}》</h2>
@@ -115,7 +115,10 @@
         <div class="list-icon">
             <span  @click="showList = !showList"  :class="[showList && 'on']">📃</span>
             <span  @click="showAuthor = !showAuthor" :class="[showAuthor && 'on']">👨‍🎓 </span>
+            <span  @click="repeatPlay = !repeatPlay" :class="[repeatPlay && 'on']">🔁 </span>
             <input type="text" v-show="showList" v-model="keyword" placeholder="诗名或作者名搜索" />
+            <!-- <input type="range" min="0" max="100" v-show="!showList" v-model="rangVal" /> -->
+             <audio src="" v-show="!showList" controls id="audio-item"></audio>
         </div>
     </div>
 

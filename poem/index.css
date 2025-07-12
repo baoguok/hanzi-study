@@ -141,6 +141,8 @@ input { background-color: #fff; border-radius: 4px; border: 1px solid #dcdfe6; w
     position: absolute;
     left: 0;
     top: 0;
+    display: flex;
+    align-items: center;
 }
 .list-icon span {
     cursor: pointer;
@@ -157,7 +159,7 @@ input { background-color: #fff; border-radius: 4px; border: 1px solid #dcdfe6; w
     width: 230px;
     background-color: var(--sidebar-bg); /* 使用变量 */
     border-right: 1px solid #e0d6c8;
-    padding: 20px 15px;
+    padding: 30px 15px 20px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -312,6 +314,11 @@ input { background-color: #fff; border-radius: 4px; border: 1px solid #dcdfe6; w
     overflow-y: auto;
     background-color: var(--content-bg); /* 使用变量 */
     transition: background-color 0.3s ease; /* 过渡效果 */
+}
+#audio-item {
+    width: 290px;
+    height: 27px;
+    opacity: .8;
 }
 
 .placeholder {
@@ -534,6 +541,9 @@ h1, h2 {
     .container {
         flex-direction: column;
     }
+    #audio-item {
+        transform: scaleY(0.9);
+    }
 
     .sidebar {
         width: 100%;
@@ -541,13 +551,14 @@ h1, h2 {
         border-right: none;
         border-bottom: 1px solid #e0d6c8;
         padding: 10px;
+        display: none;
     }
     .audio-controls span {
         display: none;
     }
 
     .content {
-        padding: 10px 15px;
+        padding: 20px 15px;
     }
 
     .poetry-info {

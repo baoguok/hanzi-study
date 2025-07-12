@@ -15,7 +15,9 @@ const app = {
             currPoemInd: -1,
             showList: false,
             showAuthor: getStorage('poem_showAuthor') || false,
+            repeatPlay: getStorage('poem_repeatPlay') || false,
             keyword: '',
+            rangVal: 0,
             // 主题相关
             currentTheme: 'theme-default', // 默认主题
             themes: [
@@ -32,9 +34,13 @@ const app = {
     },
     mounted() {
         this.currentPoetryList = this.poemData[this.currGrade] || [];
-        this.audioPlayer = new Audio();
+        this.audioPlayer = document.getElementById('audio-item') // new Audio();
         this.audioPlayer.onended = () => {
-            this.isPlaying = false;
+            if (this.repeatPlay) {
+                this.nextPoetry()
+            } else {
+                this.isPlaying = false;
+            }
         };
         if (this.currPoemInd != -1) {
             this.selectPoetry(this.currentPoetryList[this.currPoemInd], true)
@@ -56,6 +62,7 @@ const app = {
             setStorage('poem_currGrade', this.currGrade);
             setStorage('poem_currPoemInd', this.currPoemInd);
             setStorage('poem_showAuthor', this.showAuthor);
+            setStorage('poem_repeatPlay', this.repeatPlay);
         },
         selectGrade() {
             this.currentPoetryList = this.poemData[this.currGrade] || [];
@@ -86,8 +93,9 @@ const app = {
             if (this.audioPlayer.src === audioUrl && !this.audioPlayer.paused) {
                 return;
             }
+            console.log(this.audioPlayer.src, audioUrl);
             // 如果URL不同或播放器已暂停，则加载并播放
-            if (this.audioPlayer.src !== audioUrl) {
+            if (this.getFileName(this.audioPlayer.src) !== this.getFileName(audioUrl)) {
                 this.audioPlayer.src = audioUrl;
             }
             this.audioPlayer.play().then(() => {
@@ -100,7 +108,7 @@ const app = {
         stopAudio() {
             if (this.audioPlayer) {
                 this.audioPlayer.pause();
-                this.audioPlayer.currentTime = 0;
+                // this.audioPlayer.currentTime = 0;
                 this.isPlaying = false;
             }
         },
@@ -116,11 +124,17 @@ const app = {
             if (this.currPoemInd > 0) {
                 this.currPoemInd--;
                 this.selectPoetry(this.currentPoetryList[this.currPoemInd]);
+            } else if (this.repeatPlay) {
+                this.currPoemInd = this.currentPoetryList.length - 1;
+                this.selectPoetry(this.currentPoetryList[this.currPoemInd]);
             }
         },
         nextPoetry() {
             if (this.currPoemInd < this.currentPoetryList.length - 1) {
                 this.currPoemInd++;
+                this.selectPoetry(this.currentPoetryList[this.currPoemInd]);
+            } else if (this.repeatPlay) {
+                this.currPoemInd = 0;
                 this.selectPoetry(this.currentPoetryList[this.currPoemInd]);
             }
         },
@@ -133,6 +147,10 @@ const app = {
             this.currentTheme = themeKey;
             // 将当前主题保存到 localStorage
             localStorage.setItem('poetryAppTheme', themeKey);
+        },
+        getFileName(val) {
+            return decodeURIComponent(val.substring(val.lastIndexOf('/') + 1)).toLowerCase();
+
         }
     },
     computed: {
