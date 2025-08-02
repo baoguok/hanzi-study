@@ -114,7 +114,7 @@ Vue.createApp({
       if (step == 1 && this.bgPlay) this.playBg(true)
     },
     hanziClick(item, ind) {
-      if (this.isClickRead) return speakText(item.w, 1, 0.5, 1.5)
+      if (this.isClickRead) return speakText(item.w, 1, 0.6, 1.5)
       if (this.lockInd < ind) return playAudio('lock') && myAlert('小朋友请先学习前面的汉字哦~', 10);
       this.audioBg.pause()
       this.currInd = ind;
@@ -157,7 +157,8 @@ Vue.createApp({
       this.gameShow = true
       this.randomList.forEach(x => x.status = '')
       setTimeout(() => {
-        if (this.lockInd < 11) playAudio(`game-${type}`) // 10关以内播放提示
+        const isPlayTip = this.lockInd < 11
+        if (isPlayTip) playAudio(`game-${type}`) // 10关以内播放提示
         if (type === 'stroke') {
           this.strokeStatus = null
           listHanzi(document.getElementById('stroke-list'), this.currItem.w, 46)
@@ -172,10 +173,10 @@ Vue.createApp({
           })
         }
         if (type === 'listen') {
-          setTimeout(() => speakText(this.currItem.w, 3), 500)
+          setTimeout(() => speakText(this.currItem.w, 3), isPlayTip ? 2200 : 500)
         }
         if (type === 'draw') {
-          setTimeout(() => speakText(this.currItem.w, 3, 0.5), 500)
+          setTimeout(() => speakText(this.currItem.w, 3, 0.5), isPlayTip ? 2500 : 500)
           let len = 66
           // 随机一个
           this.drawImg = `./img/draw/draw${Math.floor(Math.random() * len + 1)}.webp`
@@ -196,7 +197,7 @@ Vue.createApp({
         this.gameStatus = 'correct'
         if (!this.gameStep.includes(2)) this.gameStep.push(2)
         if (this.currTest) {
-          this.addLockInd()
+          if (this.currInd == this.lockInd) this.addLockInd()
           setTimeout(() => this.goBack(1), 1200)
         }
       } else {

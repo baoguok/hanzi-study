@@ -213,8 +213,8 @@ body .hanzi-item.tested {
     position: absolute;
     font-size: 1.5em;
     /* color: #696969; */
-    width: 30%;
-    height: 60%;
+    width: 24%;
+    height: 47%;
     right: 0;
     bottom: -6px;
     background: url(../img/nezha.png) no-repeat center center;
@@ -396,6 +396,7 @@ body .hanzi-item.tested {
 }
 #game-content .question-text span {
     font-size: 0.7em;
+    animation: scale 1s infinite alternate;
 }
 
 #game-content .options-grid {
@@ -534,6 +535,11 @@ footer {
     font-size: 0.9em;
 }
 
+@keyframes scale {
+    0% { transform: scale(0.9); }
+    100% { transform: scale(1.1); }
+}
+
 @media (min-width: 700px) {
   /* .draw-box img{
     height: 30vw;
@@ -549,8 +555,11 @@ footer {
 
 /* 小于500宽度的样式 */
 @media (max-width: 500px) {
+    #app {
+        padding: 6px 8px;
+    }
     .container {
-        padding: 15px;
+        padding: 15px 10px;
     }
     #game-section {
         padding: 16px 10px;
@@ -583,8 +592,8 @@ footer {
         max-height: auto;
     }
     header h1 {
-        font-size: 2.2em;
-        margin-bottom: 20px;
+        font-size: 1.8em;
+        margin-bottom: 10px;
     }
     #game-section h2 {
         font-size: 2.2em;
@@ -626,7 +635,7 @@ footer {
     border-color: #fce4ec;
 }
 .theme-default .hanzi-item.locked::after {
-    opacity: .7;
+    opacity: 0.6;
 }
 .theme-default .play-button {
     background: #9c27b0;
