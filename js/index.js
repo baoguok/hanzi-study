@@ -1,12 +1,22 @@
 // window.bgAudio = new Audio('audio/bg.mp3')
 
+let TEST_INTERVAL = 6 // 测验间隔
+let listTemp = []
+window.dataList.forEach((item, ind) => {
+  listTemp.push(item)
+  if (ind > 2 && ind % TEST_INTERVAL === 0) listTemp.push({
+    w: '测验',
+    isTest: true
+  })
+})
+
 Vue.createApp({
   data() {
     return {
       flag: 1,
       bgPlay: true,
       notStart: true,
-      list: window.dataList,
+      list: listTemp,
       message: 'Hello Vue!',
       lockInd: 0,
       currItem: null,
@@ -23,6 +33,11 @@ Vue.createApp({
       drawImg: null,
       audioBg: null,
       theme: 'default', // default green
+      isClickRead: false, // 是否点读模式,
+      currTest: false,
+      drawType: 'slide-up',
+      drawTypeList: ['slide-up', 'slide-down', 'slide-left', 'slide-right', 'fade', 'scale', 'circle'],
+      drawColor: '#fff',
     }
   },
   created() {
@@ -43,6 +58,11 @@ Vue.createApp({
         if (this.bgPlay && this.hanziShow) this.playBg(true)
       }
     });
+    if (this.lockInd > 420) {
+      let temp = document.createElement('script')
+      temp.src = './js/lib/dataWriter1.js'
+      document.body.appendChild(temp)
+    }
   },
   methods: {
     speakText: speakText,
@@ -58,6 +78,15 @@ Vue.createApp({
       } else {
         this.playBg()
       }
+    },
+    toggleCr() {
+      this.isClickRead = !this.isClickRead
+      if (this.isClickRead) {
+        this.playBg()
+      } else if (this.bgPlay) {
+        this.playBg(true)
+      }
+      dnotify(`已切换为${  this.isClickRead ? '点读模式' : '学习模式' }模式`)
     },
     playBg(isPlay) {
       if (isPlay === true) {
@@ -76,8 +105,8 @@ Vue.createApp({
     },
     goBack(step) {
       playAudio('click')
-      this.hanziShow = step == 1;
-      this.cardShow = step == 2;
+      this.hanziShow = this.currTest || step == 1;
+      this.cardShow = !this.currTest && step == 2;
       this.gameShow = false;
       this.gameStatus = null
       this.strokeStatus = null
@@ -85,26 +114,40 @@ Vue.createApp({
       if (step == 1 && this.bgPlay) this.playBg(true)
     },
     hanziClick(item, ind) {
+      if (this.isClickRead) return speakText(item.w, 1, 0.5, 1.5)
       if (this.lockInd < ind) return playAudio('lock') && myAlert('小朋友请先学习前面的汉字哦~', 10);
       this.audioBg.pause()
-      this.currItem = item;
       this.currInd = ind;
-      this.gameStep = [];
-      // 随机抽取ind周围前后20个之内的3个汉字
-      let temp = window.dataList
-        .filter((x, i) => i >= ind - 20 && i <= ind + 20 && x.w != item.w)
-        .sort(() => Math.random() - 0.5).slice(0, 3)
-      // temp随机一个位置插入currItem
-      temp.splice(Math.floor(Math.random() * temp.length), 0, item)
-      this.randomList = temp.map(item => ({ ...item }));
-      this.hanziShow = false;
-      this.cardShow = true;
-      setTimeout(() => this.readItem(item), 1000)
+      this.currTest = !!item.isTest;
+      if (item.isTest) {
+        let temp = this.list
+          .filter((x, i) => i >= ind - (TEST_INTERVAL) && i < ind)
+          .sort(() => Math.random() - 0.5) // .slice(0, 3)
+        this.randomList = temp.map(item => ({ ...item }));
+        this.currItem = temp[Math.floor(Math.random() * temp.length)]
+        this.gameStep = [1];
+        this.hanziShow = false;
+        this.cardShow = true;
+        this.goGame('listen')
+      } else {
+        // 随机抽取ind周围前后20个之内的3个汉字
+        this.currItem = item;
+        let temp = window.dataList
+          .filter((x, i) => i >= ind - 20 && i <= ind + 20 && x.w != item.w)
+          .sort(() => Math.random() - 0.5).slice(0, 3)
+        // temp随机一个位置插入currItem
+        temp.splice(Math.floor(Math.random() * temp.length), 0, item)
+        this.randomList = temp.map(item => ({ ...item }));
+        this.gameStep = [];
+        this.hanziShow = false;
+        this.cardShow = true;
+        setTimeout(() => this.readItem(item), 100)
+      }
     },
-    readItem(item) {
+    readItem(item, onlyOne) {
       item = item || this.currItem;
       console.log(item);
-      speakText(item.w + ', ' + item.p + '的' + item.w)
+      speakText(onlyOne ? item.w : (item.w + ', ' + item.p + '的' + item.w))
     },
     goGame(type) {
       if (this.lockInd == this.currInd && ((type === 'listen' && this.gameStep.length < 1)
@@ -114,7 +157,7 @@ Vue.createApp({
       this.gameShow = true
       this.randomList.forEach(x => x.status = '')
       setTimeout(() => {
-        playAudio(`game-${type}`)
+        if (this.lockInd < 11) playAudio(`game-${type}`) // 10关以内播放提示
         if (type === 'stroke') {
           this.strokeStatus = null
           listHanzi(document.getElementById('stroke-list'), this.currItem.w, 46)
@@ -129,14 +172,16 @@ Vue.createApp({
           })
         }
         if (type === 'listen') {
-          setTimeout(() => speakText(this.currItem.w, 3), 2600)
+          setTimeout(() => speakText(this.currItem.w, 3), 500)
         }
         if (type === 'draw') {
-          setTimeout(() => speakText(this.currItem.w, 3), 3400)
+          setTimeout(() => speakText(this.currItem.w, 3, 0.5), 500)
           let len = 66
           // 随机一个
           this.drawImg = `./img/draw/draw${Math.floor(Math.random() * len + 1)}.webp`
-          this.drawStatus = 10
+          this.drawStatus = 0
+          this.drawType = this.drawTypeList[Math.floor(Math.random() * this.drawTypeList.length)]
+          this.drawColor = getRandomColor()
         }
       }, 500)
     },
@@ -150,6 +195,10 @@ Vue.createApp({
         item.status = 'correct'
         this.gameStatus = 'correct'
         if (!this.gameStep.includes(2)) this.gameStep.push(2)
+        if (this.currTest) {
+          this.addLockInd()
+          setTimeout(() => this.goBack(1), 1200)
+        }
       } else {
         playAudio('wrong')
         item.status = 'wrong'

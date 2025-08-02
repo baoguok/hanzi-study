@@ -11,7 +11,7 @@ body {
     user-select: none; /* Chrome, Opera, and others */
 }
 #app {
-    min-height: 100vh;
+    min-height: 100dvh;
     margin: 0;
     padding: 6px 20px;
     --color-page-body: #fff;
@@ -34,7 +34,7 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
+    height: 100dvh;
     background: var(--color-page-body);
     filter: blur(5px);
 }
@@ -100,8 +100,12 @@ body {
    left: 10px;
    opacity: .5;
 }
-.audio-img.off {
+.audio-img.off, .click-read.off {
     opacity: .3;
+}
+.click-read {
+    right: 45px;
+    font-size: 21px;
 }
 .go-top {
     position: absolute;
@@ -165,7 +169,7 @@ header p {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 15px;
     margin-top: 20px;
-    height: 70vh;
+    height: 70dvh;
     overflow-y: auto;
     padding: 10px;
 }
@@ -187,6 +191,10 @@ header p {
     align-items: center;
     height: 100px;
     color: var(--color-theme);
+}
+body .hanzi-item.tested {
+    font-size: 1.9em;
+    color: #ff6347;
 }
 .hanzi-item.on {
     background: #ffca87;
@@ -382,6 +390,12 @@ header p {
     font-weight: bold;
     color: var(--color-theme);
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+#game-content .question-text span {
+    font-size: 0.7em;
 }
 
 #game-content .options-grid {
@@ -493,13 +507,18 @@ header p {
 }
 .draw-box span {
     position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 90%;
-    background-color: #fff;
+    height: 100%;
+    background-color: #000;
     transition: all .3s;
 }
+.draw-box span.slide-up { top: 0; left: 0; height: var(--p-not); }
+.draw-box span.slide-down { bottom: 0; left: 0; height: var(--p-not); }
+.draw-box span.slide-left { left: 0; top: 0; width: var(--p-not); }
+.draw-box span.slide-right { right: 0; top: 0; width: var(--p-not); }
+.draw-box span.fade { top: 0; left: 0; background-color: #000; opacity: var(--d-not); }
+.draw-box span.scale { top: 0; left: 0; background-color: #000; transform: scale(var(--d-not));}
+.draw-box span.circle { top: 0; left: 0; border-radius: 50%; background-color: #000; opacity: var(--d-not); transform: scale(var(--d-not));}
 .draw-wrap .option-button {
     padding: 5px 10px;
     margin: 6px 0;
@@ -573,7 +592,7 @@ footer {
     }
     .hanzi-list {
         grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
-        height: 67vh;
+        height: 67dvh;
     }
     .big-char {
         font-size: 6em;
